@@ -1,9 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.RedHood" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.RedHood" parent="Theme.MaterialComponents.DayNight">
+        <item name="actionBarTheme">@style/ThemeOverlay.ActionBar</item>
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorPrimary">@color/red</item>
+        <item name="colorPrimaryVariant">@color/red_secondary</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
@@ -12,5 +13,8 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+    </style>
+    <style name="ThemeOverlay.ActionBar" parent="">
+        <item name="colorPrimary">@color/white</item>
     </style>
 </resources>
