@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">RedHood</string>
+    <string name="element_text">Hello there</string>
 </resources>
