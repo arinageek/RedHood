@@ -3,16 +3,14 @@ package com.example.redhood;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import com.example.redhood.database.entities.Set;
+import com.example.redhood.fragments.HomeFragment;
+import com.example.redhood.fragments.SetsFragment;
+import com.example.redhood.fragments.SettingsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -49,7 +47,4 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 }
             };
-
-
-
 }

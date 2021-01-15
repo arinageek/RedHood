@@ -1,8 +1,7 @@
-package com.example.redhood;
+package com.example.redhood.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,9 +12,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-public class SetDialog extends DialogFragment {
+import com.example.redhood.R;
+import com.example.redhood.fragments.SetsFragment;
+
+public class AddNewSetDialog extends DialogFragment {
     private EditText edit_title;
-    //private SetDialogListener listener;
 
     @NonNull
     @Override
@@ -23,7 +24,7 @@ public class SetDialog extends DialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.layout_dialog, null);
+        View view = inflater.inflate(R.layout.layout_new_set_dialog, null);
 
         builder.setView(view)
                 .setTitle("Create a new set")
@@ -37,7 +38,6 @@ public class SetDialog extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String title = edit_title.getText().toString();
-                        //listener.applyTexts(title);
                         SetsFragment.applyTexts(title);
                     }
                 });
@@ -45,23 +45,4 @@ public class SetDialog extends DialogFragment {
 
         return builder.create();
     }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        /*
-        try {
-            listener = (SetDialogListener) getTargetFragment();
-        } catch (ClassCastException e) {
-            throw new ClassCastException(getTargetFragment().toString()+
-                    "must implement SetDialogListener");
-        }
-        */
-
-    }
-
-    /*
-    public interface SetDialogListener{
-        void applyTexts(String title);
-    }*/
 }

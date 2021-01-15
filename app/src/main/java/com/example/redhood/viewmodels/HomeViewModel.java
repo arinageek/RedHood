@@ -1,4 +1,5 @@
-package com.example.redhood;
+package com.example.redhood.viewmodels;
+
 
 import android.app.Application;
 
@@ -12,29 +13,15 @@ import com.example.redhood.database.entities.Word;
 
 import java.util.List;
 
-public class SetViewModel extends AndroidViewModel {
+public class HomeViewModel extends AndroidViewModel {
 
     private SetRepository repository;
     private LiveData<List<Set>> allSets;
 
-    public SetViewModel(@NonNull Application application) {
+    public HomeViewModel(@NonNull Application application) {
         super(application);
         repository = new SetRepository(application);
         allSets = repository.getAllSets();
-    }
-
-    //Set tasks
-    public void insert(Set set){
-        repository.insert(set);
-    }
-    public void update(Set set){
-        repository.update(set);
-    }
-    public void delete(Set set){
-        repository.delete(set);
-    }
-    public LiveData<List<Set>> getAllSets() {
-        return allSets;
     }
 
     //Word tasks
@@ -48,5 +35,9 @@ public class SetViewModel extends AndroidViewModel {
         repository.deleteWord(word);
     }
 
-    public void getSetWithWords(Set set){repository.getSetWithWords(set);}
+    public LiveData<List<Set>> getAllSets(){
+        return allSets;
+    }
+
+
 }

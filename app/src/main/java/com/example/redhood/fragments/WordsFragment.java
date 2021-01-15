@@ -1,4 +1,4 @@
-package com.example.redhood;
+package com.example.redhood.fragments;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -13,6 +13,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.redhood.R;
 
 import java.util.ArrayList;
 

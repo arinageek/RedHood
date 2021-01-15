@@ -1,4 +1,4 @@
-package com.example.redhood;
+package com.example.redhood.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,10 +15,13 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.redhood.R;
+import com.example.redhood.SetAdapter;
+import com.example.redhood.dialogs.AddNewSetDialog;
+import com.example.redhood.viewmodels.SetViewModel;
 import com.example.redhood.database.entities.Set;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SetsFragment extends Fragment {
@@ -82,11 +85,10 @@ public class SetsFragment extends Fragment {
     }
 
     public void openDialog(){
-        SetDialog setDialog = new SetDialog();
-        setDialog.show(getActivity().getSupportFragmentManager(), "set dialog");
+        AddNewSetDialog addNewSetDialog = new AddNewSetDialog();
+        addNewSetDialog.show(getActivity().getSupportFragmentManager(), "set dialog");
     }
 
-    //@Override
     public static void applyTexts(String title) {
         setViewModel.insert(new Set(title));
     }
