@@ -36,8 +36,12 @@ public interface SetDao {
     void deleteWord(Word word);
 
     @Transaction
-    @Query("SELECT * FROM word_table WHERE setId = :setId")
-    public List<SetWithWords> getSetWithWords(int setId);
+    @Query("SELECT * FROM set_table WHERE id = :setId")
+    LiveData<List<SetWithWords>> getSetWithWords(int setId);
+
+    @Transaction
+    @Query("DELETE FROM word_table WHERE setId = :setId")
+    void deleteAllWordsFrom(int setId);
 
     @Query("SELECT * FROM set_table")
     LiveData<List<Set>> getAllSets();

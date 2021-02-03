@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData;
 import com.example.redhood.database.SetRepository;
 import com.example.redhood.database.entities.Set;
 import com.example.redhood.database.entities.Word;
+import com.example.redhood.database.relations.SetWithWords;
 
 import java.util.List;
 
@@ -36,6 +37,6 @@ public class SetViewModel extends AndroidViewModel {
     public LiveData<List<Set>> getAllSets() {
         return allSets;
     }
+    public void deleteAllWordsFrom(Set set){ repository.deleteAllWordsFrom(set);}
 
-    public void getSetWithWords(Set set){repository.getSetWithWords(set);}
 }

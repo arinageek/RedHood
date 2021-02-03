@@ -1,5 +1,6 @@
 package com.example.redhood.fragments;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,10 +10,12 @@ import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.example.redhood.MainActivity;
 import com.example.redhood.database.SetRepository;
 import com.example.redhood.database.entities.Set;
 import com.example.redhood.dialogs.ChooseSetDialog;
@@ -36,7 +39,7 @@ public class HomeFragment extends Fragment {
     //Just titles of sets to send to ChooseSetDialog
     private static CharSequence[] setsTitles;
     //Array of Set Objects to get a setId by index
-    private static List<Set> items = new ArrayList<>();
+    private static List<Set> setsObjects = new ArrayList<>();
 
     @Nullable
     @Override
@@ -75,7 +78,7 @@ public class HomeFragment extends Fragment {
         homeViewModel.getAllSets().observe(getActivity(), new Observer<List<Set>>() {
             @Override
             public void onChanged(List<Set> sets) {
-                items = sets;
+                setsObjects = sets;
                 setsTitles = new CharSequence[sets.size()];
                 for(int i=0; i<sets.size(); i++){
                     setsTitles[i] = sets.get(i).getName();
@@ -86,16 +89,18 @@ public class HomeFragment extends Fragment {
     }
 
     public void openDialog(){
+        //onChanged can be called from multiple states causing openDialog to fire up
+        //So we need to check whether the current fragment is added
+        if (!isAdded()) return;
         ChooseSetDialog dialog = new ChooseSetDialog();
-        dialog.show(getActivity().getSupportFragmentManager(), "choose_set_dialog");
+        dialog.show(getChildFragmentManager(), "choose_set_dialog");
     }
 
     //This function is called from ChooseSetDialog
     public static void saveWordToSet(int choice){
-        Word word = new Word(items.get(choice).getId(), original, translation);
+        Word word = new Word(setsObjects.get(choice).getId(), original, translation);
         original=""; translation="";
         homeViewModel.insertWord(word);
-        etOrigWord.setText("");
-        etTransWord.setText("");
+        etOrigWord.setText(""); etTransWord.setText("");
     }
 }

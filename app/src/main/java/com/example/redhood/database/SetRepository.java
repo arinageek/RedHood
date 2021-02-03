@@ -10,6 +10,7 @@ import com.example.redhood.database.SetDao;
 import com.example.redhood.database.SetDatabase;
 import com.example.redhood.database.entities.Set;
 import com.example.redhood.database.entities.Word;
+import com.example.redhood.database.relations.SetWithWords;
 
 import java.util.List;
 
@@ -33,6 +34,9 @@ public class SetRepository {
     public void delete(Set set){
         new DeleteSetAsyncTask(setDao).execute(set);
     }
+    public void deleteAllWordsFrom(Set set){
+        new DeleteAllWordsFromAsyncTask(setDao).execute(set);
+    }
     public LiveData<List<Set>> getAllSets(){
         return allSets;
     }
@@ -46,7 +50,8 @@ public class SetRepository {
         new DeleteWordAsyncTask(setDao).execute(word);
     }
 
-    public void getSetWithWords(Set set){ new GetSetWithWordsAsyncTask(setDao).execute(set);}
+    //Relations functions
+    public LiveData<List<SetWithWords>> getSetWithWords(int setId){ return setDao.getSetWithWords(setId);}
 
     //Set async tasks
     private static class InsertSetAsyncTask extends AsyncTask<Set, Void, Void> {
@@ -88,6 +93,19 @@ public class SetRepository {
         }
     }
 
+    private static class DeleteAllWordsFromAsyncTask extends AsyncTask<Set, Void, Void> {
+        private SetDao setDao;
+
+        private DeleteAllWordsFromAsyncTask(SetDao setDao){
+            this.setDao = setDao;
+        }
+        @Override
+        protected Void doInBackground(Set... sets) {
+            setDao.deleteAllWordsFrom(sets[0].getId());
+            return null;
+        }
+    }
+
     //Word async tasks
     private static class InsertWordAsyncTask extends AsyncTask<Word, Void, Void> {
         private SetDao setDao;
@@ -124,20 +142,6 @@ public class SetRepository {
         @Override
         protected Void doInBackground(Word... words) {
             setDao.deleteWord(words[0]);
-            return null;
-        }
-    }
-
-    //Get words from a specific set
-    private static class GetSetWithWordsAsyncTask extends AsyncTask<Set, Void, Void> {
-        private SetDao setDao;
-
-        private GetSetWithWordsAsyncTask(SetDao setDao){
-            this.setDao = setDao;
-        }
-        @Override
-        protected Void doInBackground(Set... sets) {
-            setDao.getSetWithWords(sets[0].getId());
             return null;
         }
     }
