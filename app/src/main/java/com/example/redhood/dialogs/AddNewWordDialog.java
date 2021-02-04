@@ -2,6 +2,7 @@ package com.example.redhood.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,15 +16,17 @@ import androidx.fragment.app.DialogFragment;
 import com.example.redhood.R;
 import com.example.redhood.fragments.SetsFragment;
 
-public class AddNewSetDialog extends DialogFragment {
-    private EditText edit_title;
+public class AddNewWordDialog extends DialogFragment {
+    private EditText et_orig;
+    private EditText et_trans;
     private OnSaveListener onSaveListener;
 
     public interface OnSaveListener{
-        void onSaveNewSet(String title);
+        void onSaveNewWord(String word, String translation);
     }
-
-    public void setOnSaveListener(OnSaveListener listener){ onSaveListener = listener; }
+    public void setOnSaveListener(OnSaveListener listener) {
+        onSaveListener = listener;
+    }
 
     @NonNull
     @Override
@@ -31,18 +34,20 @@ public class AddNewSetDialog extends DialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.layout_new_set_dialog, null);
+        View view = inflater.inflate(R.layout.layout_new_word_dialog, null);
 
-        edit_title = view.findViewById(R.id.edit_title);
+        et_orig = view.findViewById(R.id.et_origWord);
+        et_trans = view.findViewById(R.id.et_transWord);
 
         builder.setView(view)
-                .setTitle("Create a new set")
+                .setTitle("Add a new word")
                 .setNegativeButton("Cancel", (dialog, which) -> {
 
                 })
                 .setPositiveButton("Save", (dialog, which) -> {
-                    String title = edit_title.getText().toString();
-                    if(onSaveListener!=null) onSaveListener.onSaveNewSet(title);
+                    String word = et_orig.getText().toString();
+                    String translation = et_trans.getText().toString();
+                    if(onSaveListener!=null) onSaveListener.onSaveNewWord(word, translation);
                 });
 
         return builder.create();

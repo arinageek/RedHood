@@ -1,4 +1,4 @@
-package com.example.redhood;
+package com.example.redhood.adapters;
 
 
 import android.view.LayoutInflater;
@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.redhood.R;
 import com.example.redhood.database.entities.Set;
 
 public class SetAdapter extends ListAdapter<Set, SetAdapter.SetHolder> {

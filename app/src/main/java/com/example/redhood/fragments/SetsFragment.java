@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,8 +19,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.redhood.MainActivity;
 import com.example.redhood.R;
-import com.example.redhood.SetAdapter;
+import com.example.redhood.adapters.SetAdapter;
 import com.example.redhood.dialogs.AddNewSetDialog;
+import com.example.redhood.dialogs.AddNewWordDialog;
 import com.example.redhood.viewmodels.SetViewModel;
 import com.example.redhood.database.entities.Set;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -52,19 +52,17 @@ public class SetsFragment extends Fragment {
         recyclerView.setAdapter(adapter);
 
         setViewModel = ViewModelProviders.of(this).get(SetViewModel.class);
-        setViewModel.getAllSets().observe(getActivity(), new Observer<List<Set>>() {
-            @Override
-            public void onChanged(List<Set> sets) {
-                //update RecyclerView
-                adapter.submitList(sets);
-            }
+        setViewModel.getAllSets().observe(getActivity(), sets -> {
+            //update RecyclerView
+            adapter.submitList(sets);
         });
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.RIGHT) {
 
             @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder,
+                                  @NonNull RecyclerView.ViewHolder target) {
                 return false;
             }
 
@@ -72,41 +70,26 @@ public class SetsFragment extends Fragment {
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 new AlertDialog.Builder(getActivity())
                         .setTitle("Do you want to delete this set?")
-                        .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                setViewModel.deleteAllWordsFrom(adapter.getSetAt(viewHolder.getAdapterPosition()));
-                                setViewModel.delete(adapter.getSetAt(viewHolder.getAdapterPosition()));
-                            }
+                        .setPositiveButton("Delete", (dialog, which) -> {
+                            setViewModel.deleteAllWordsFrom(adapter.getSetAt(viewHolder.getAdapterPosition()));
+                            setViewModel.delete(adapter.getSetAt(viewHolder.getAdapterPosition()));
                         })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                adapter.notifyItemChanged(viewHolder.getAdapterPosition());
-                            }
-                        }).create().show();
+                        .setNegativeButton("Cancel",
+                                (dialog, which) -> adapter.notifyItemChanged(viewHolder.getAdapterPosition())).create().show();
             }
         }).attachToRecyclerView(recyclerView);
 
-        adapter.setOnItemClickListener(new SetAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Set set) {
-                //navigate to a single set page
-                WordsFragment fragment = new WordsFragment();
-                Bundle arguments = new Bundle();
-                arguments.putString("set_id" , String.valueOf(set.getId()));
-                fragment.setArguments(arguments);
-                fragmentManager.beginTransaction().replace(R.id.fragment_container,
-                        fragment).commit();
-            }
+        adapter.setOnItemClickListener(set -> {
+            //navigate to a single set page
+            WordsFragment fragment = new WordsFragment();
+            Bundle arguments = new Bundle();
+            arguments.putString("set_id" , String.valueOf(set.getId()));
+            fragment.setArguments(arguments);
+            fragmentManager.beginTransaction().replace(R.id.fragment_container,
+                    fragment).commit();
         });
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openAddNewSetDialog();
-            }
-        });
+        fab.setOnClickListener(v -> openAddNewSetDialog());
 
         return rootView;
     }
@@ -114,9 +97,8 @@ public class SetsFragment extends Fragment {
     public void openAddNewSetDialog(){
         AddNewSetDialog addNewSetDialog = new AddNewSetDialog();
         addNewSetDialog.show(getChildFragmentManager(), "set dialog");
-    }
-
-    public static void applyTexts(String title) {
-        setViewModel.insert(new Set(title));
+        addNewSetDialog.setOnSaveListener(title -> {
+            setViewModel.insert(new Set(title));
+        });
     }
 }

@@ -1,10 +1,11 @@
-package com.example.redhood;
+package com.example.redhood.adapters;
 
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,8 +13,9 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.redhood.database.entities.Set;
+import com.example.redhood.R;
 import com.example.redhood.database.entities.Word;
+import com.squareup.picasso.Picasso;
 
 public class WordAdapter extends ListAdapter<Word, WordAdapter.WordHolder> {
 
@@ -49,6 +51,9 @@ public class WordAdapter extends ListAdapter<Word, WordAdapter.WordHolder> {
         Log.d("Word: ", "Orig: "+currentWord.getOriginal());
         holder.textViewTranslation.setText(currentWord.getTranslation());
         holder.textViewOriginal.setText(currentWord.getOriginal());
+        String url = "https://img.webmd.com/dtmcms/live/webmd/consumer_assets/site_images/article_thumbnails/other/cat_relaxing_on_patio_other/1800x1200_cat_relaxing_on_patio_other.jpg";
+        Picasso.get().load(url).resize(80, 80)
+                .centerCrop().into(holder.imageBg);
     }
 
     public Word getWordAt(int position) {
@@ -58,11 +63,13 @@ public class WordAdapter extends ListAdapter<Word, WordAdapter.WordHolder> {
     class WordHolder extends RecyclerView.ViewHolder {
         private TextView textViewOriginal;
         private TextView textViewTranslation;
+        private ImageView imageBg;
 
         public WordHolder(@NonNull View itemView) {
             super(itemView);
             textViewOriginal = itemView.findViewById(R.id.text_view_original);
             textViewTranslation = itemView.findViewById(R.id.text_view_translation);
+            imageBg = itemView.findViewById(R.id.imageBg);
 
             itemView.setOnClickListener(v -> {
                 int position = getAdapterPosition();

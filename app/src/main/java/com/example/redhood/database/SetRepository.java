@@ -34,9 +34,7 @@ public class SetRepository {
     public void delete(Set set){
         new DeleteSetAsyncTask(setDao).execute(set);
     }
-    public void deleteAllWordsFrom(Set set){
-        new DeleteAllWordsFromAsyncTask(setDao).execute(set);
-    }
+    public void deleteAllWordsFrom(Set set){ new DeleteAllWordsFromAsyncTask(setDao).execute(set); }
     public LiveData<List<Set>> getAllSets(){
         return allSets;
     }
