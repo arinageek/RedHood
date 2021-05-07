@@ -13,15 +13,17 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.redhood.R;
 
-public class AddNewSetDialog extends DialogFragment {
-    private EditText edit_title;
+public class EditWordDialog extends DialogFragment {
+    private EditText et_orig;
+    private EditText et_trans;
     private OnSaveListener onSaveListener;
 
     public interface OnSaveListener{
-        void onSaveNewSet(String title);
+        void onSaveEditedWord(String word, String translation);
     }
-
-    public void setOnSaveListener(OnSaveListener listener){ onSaveListener = listener; }
+    public void setOnSaveListener(OnSaveListener listener) {
+        onSaveListener = listener;
+    }
 
     @NonNull
     @Override
@@ -29,18 +31,23 @@ public class AddNewSetDialog extends DialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.layout_new_edit_set_dialog, null);
+        View view = inflater.inflate(R.layout.layout_new_word_dialog, null);
 
-        edit_title = view.findViewById(R.id.edit_title);
+        et_orig = view.findViewById(R.id.et_origWord);
+        et_trans = view.findViewById(R.id.et_transWord);
+
+        et_orig.setText(getArguments().getString("word_original"));
+        et_trans.setText(getArguments().getString("word_translation"));
 
         builder.setView(view)
-                .setTitle("Create a new set")
+                .setTitle("Edit the word")
                 .setNegativeButton("Cancel", (dialog, which) -> {
 
                 })
                 .setPositiveButton("Save", (dialog, which) -> {
-                    String title = edit_title.getText().toString();
-                    if(onSaveListener!=null) onSaveListener.onSaveNewSet(title);
+                    String word = et_orig.getText().toString();
+                    String translation = et_trans.getText().toString();
+                    if(onSaveListener!=null) onSaveListener.onSaveEditedWord(word, translation);
                 });
 
         return builder.create();

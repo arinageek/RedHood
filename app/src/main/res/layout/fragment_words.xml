@@ -1,25 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:id="@+id/coordinator_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewWords"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:spanCount="2"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/words_row_item"/>
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/set_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:fontFamily="@font/montserrat"
+            tools:text="Set!!!"
+            android:textColor="#000000"
+            android:textSize="20dp" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_add"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="32dp"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewWords"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="2"
+            tools:listitem="@layout/words_row_item" />
+    </LinearLayout>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="32dp"
+            android:src="@drawable/ic_add" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

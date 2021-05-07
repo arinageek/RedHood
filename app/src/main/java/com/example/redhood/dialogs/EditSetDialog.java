@@ -13,12 +13,12 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.redhood.R;
 
-public class AddNewSetDialog extends DialogFragment {
+public class EditSetDialog extends DialogFragment {
     private EditText edit_title;
     private OnSaveListener onSaveListener;
 
     public interface OnSaveListener{
-        void onSaveNewSet(String title);
+        void onSaveEditedSet(String title);
     }
 
     public void setOnSaveListener(OnSaveListener listener){ onSaveListener = listener; }
@@ -32,15 +32,16 @@ public class AddNewSetDialog extends DialogFragment {
         View view = inflater.inflate(R.layout.layout_new_edit_set_dialog, null);
 
         edit_title = view.findViewById(R.id.edit_title);
+        edit_title.setText(getArguments().getString("set_title"));
 
         builder.setView(view)
-                .setTitle("Create a new set")
+                .setTitle("Edit the set")
                 .setNegativeButton("Cancel", (dialog, which) -> {
 
                 })
                 .setPositiveButton("Save", (dialog, which) -> {
                     String title = edit_title.getText().toString();
-                    if(onSaveListener!=null) onSaveListener.onSaveNewSet(title);
+                    if(onSaveListener!=null) onSaveListener.onSaveEditedSet(title);
                 });
 
         return builder.create();

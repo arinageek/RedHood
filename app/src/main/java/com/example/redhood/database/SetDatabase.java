@@ -52,7 +52,6 @@ public abstract class SetDatabase extends RoomDatabase {
         @Override
         protected Void doInBackground(Void... voids) {
             setDao.insert(new Set("Example set 1"));
-            setDao.insert(new Set("Your second set"));
             return null;
         }
     }

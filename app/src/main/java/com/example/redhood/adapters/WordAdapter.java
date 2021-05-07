@@ -48,12 +48,11 @@ public class WordAdapter extends ListAdapter<Word, WordAdapter.WordHolder> {
     @Override
     public void onBindViewHolder(@NonNull WordHolder holder, int position) {
         Word currentWord = getItem(position);
-        Log.d("Word: ", "Orig: "+currentWord.getOriginal());
         holder.textViewTranslation.setText(currentWord.getTranslation());
         holder.textViewOriginal.setText(currentWord.getOriginal());
-        String url = "https://img.webmd.com/dtmcms/live/webmd/consumer_assets/site_images/article_thumbnails/other/cat_relaxing_on_patio_other/1800x1200_cat_relaxing_on_patio_other.jpg";
+        /*String url = "https://img.webmd.com/dtmcms/live/webmd/consumer_assets/site_images/article_thumbnails/other/cat_relaxing_on_patio_other/1800x1200_cat_relaxing_on_patio_other.jpg";
         Picasso.get().load(url).resize(80, 80)
-                .centerCrop().into(holder.imageBg);
+                .centerCrop().into(holder.imageBg);*/
     }
 
     public Word getWordAt(int position) {
@@ -63,13 +62,13 @@ public class WordAdapter extends ListAdapter<Word, WordAdapter.WordHolder> {
     class WordHolder extends RecyclerView.ViewHolder {
         private TextView textViewOriginal;
         private TextView textViewTranslation;
-        private ImageView imageBg;
+        //private ImageView imageBg;
 
         public WordHolder(@NonNull View itemView) {
             super(itemView);
             textViewOriginal = itemView.findViewById(R.id.text_view_original);
             textViewTranslation = itemView.findViewById(R.id.text_view_translation);
-            imageBg = itemView.findViewById(R.id.imageBg);
+            //imageBg = itemView.findViewById(R.id.imageBg);
 
             itemView.setOnClickListener(v -> {
                 int position = getAdapterPosition();
@@ -77,11 +76,20 @@ public class WordAdapter extends ListAdapter<Word, WordAdapter.WordHolder> {
                     listener.onItemClick(getItem(position));
                 }
             });
+
+            itemView.setOnLongClickListener(v -> {
+                int position = getAdapterPosition();
+                if (listener != null && position != RecyclerView.NO_POSITION) {
+                    listener.onItemLongClick(getItem(position), position);
+                }
+                return false;
+            });
         }
     }
 
     public interface OnItemClickListener {
         void onItemClick(Word word);
+        void onItemLongClick(Word word, int position);
     }
 
     public void wordOnItemClickListener(OnItemClickListener listener) {

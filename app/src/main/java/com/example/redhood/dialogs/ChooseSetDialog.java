@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
@@ -29,6 +30,15 @@ import java.util.List;
 public class ChooseSetDialog extends DialogFragment {
 
     private int choice=0;
+    private OnSelectedListener onSelectedListener;
+    private static CharSequence[] setsTitles;
+
+    public interface OnSelectedListener { void onSetSelected(int position); }
+    public void setOnSelectedListener(ChooseSetDialog.OnSelectedListener listener){ onSelectedListener = listener; }
+
+    public ChooseSetDialog(CharSequence[] sets){
+        setsTitles = sets;
+    }
 
     @NonNull
     @Override
@@ -37,25 +47,20 @@ public class ChooseSetDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         builder.setTitle("Add to set")
-                .setSingleChoiceItems(HomeFragment.getSets(), 0,new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        choice = which;
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                .setSingleChoiceItems(setsTitles, 0, (dialog, which) -> choice = which)
+                .setNegativeButton("Cancel", (dialog, which) -> {
 
-                    }
                 })
-                .setPositiveButton("Save", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        HomeFragment.saveWordToSet(choice);
-                    }
+                .setPositiveButton("Save", (dialog, which) -> {
+                    if(onSelectedListener != null) onSelectedListener.onSetSelected(choice);
                 });
 
         return builder.create();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        onSelectedListener = null;
     }
 }

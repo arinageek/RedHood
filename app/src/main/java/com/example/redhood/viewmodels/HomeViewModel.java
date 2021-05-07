@@ -28,12 +28,6 @@ public class HomeViewModel extends AndroidViewModel {
     public void insertWord(Word word){
         repository.insertWord(word);
     }
-    public void updateWord(Word word){
-        repository.updateWord(word);
-    }
-    public void deleteWord(Word word){
-        repository.deleteWord(word);
-    }
 
     public LiveData<List<Set>> getAllSets(){
         return allSets;

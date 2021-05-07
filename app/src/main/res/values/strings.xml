@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">RedHood</string>
     <string name="element_text">Hello there</string>
+    <string name="action_gallery">Gallery</string>
+    <string name="permission_request">This app need to access files on your device.</string>
+    <string name="no_text">No text found</string>
 </resources>

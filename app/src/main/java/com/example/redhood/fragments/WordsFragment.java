@@ -8,46 +8,60 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.redhood.MainActivity;
 import com.example.redhood.R;
 import com.example.redhood.adapters.WordAdapter;
 import com.example.redhood.database.entities.Word;
 import com.example.redhood.dialogs.AddNewWordDialog;
+import com.example.redhood.dialogs.EditSetDialog;
+import com.example.redhood.dialogs.EditWordDialog;
+import com.example.redhood.viewmodels.SetViewModel;
 import com.example.redhood.viewmodels.WordViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.squareup.picasso.Picasso;
+
 
 public class WordsFragment extends Fragment{
 
+    private FragmentManager fragmentManager;
     private static RecyclerView recyclerView;
     private static WordViewModel wordViewModel;
     private static WordAdapter adapter;
     private FloatingActionButton fab;
     private static int setId;
+    private TextView set_title;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_words, container, false);
 
+        fragmentManager = ((MainActivity)getActivity()).getSupportFragmentManager();
+
         fab = rootView.findViewById(R.id.fab);
+        set_title = rootView.findViewById(R.id.set_title);
         recyclerView = rootView.findViewById(R.id.recyclerViewWords);
         //recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new WordAdapter();
         recyclerView.setAdapter(adapter);
 
         setId = Integer.parseInt(getArguments().getString("set_id", "0"));
+        set_title.setText(getArguments().getString("set_title", "Set"));
 
-        wordViewModel = ViewModelProviders.of(this).get(WordViewModel.class);
-        wordViewModel.getSetWithWords(setId).observe(getActivity(), setWithWords -> {
+        wordViewModel = new ViewModelProvider(this).get(WordViewModel.class);
+        wordViewModel.getSetWithWords(setId).observe(getViewLifecycleOwner(), setWithWords -> {
             if(setWithWords.isEmpty()) return;
             //update RecyclerView
             adapter.submitList(setWithWords.get(0).words);
@@ -70,10 +84,21 @@ public class WordsFragment extends Fragment{
             }
         }).attachToRecyclerView(recyclerView);
 
-        adapter.wordOnItemClickListener(word -> {
-            //navigate to home page just for trial
-            getParentFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    new HomeFragment()).commit();
+        adapter.wordOnItemClickListener(new WordAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Word word) {
+                SingleWordFragment fragment = new SingleWordFragment();
+                Bundle arguments = new Bundle();
+                arguments.putString("word" , String.valueOf(word.getOriginal()));
+                fragment.setArguments(arguments);
+                fragmentManager.beginTransaction().replace(R.id.fragment_container,
+                        fragment).addToBackStack(null).commit();
+            }
+
+            @Override
+            public void onItemLongClick(Word word, int position) {
+                openEditWordDialog(word, position);
+            }
         });
 
         fab.setOnClickListener(v -> {
@@ -91,4 +116,19 @@ public class WordsFragment extends Fragment{
         });
     }
 
+    public void openEditWordDialog(Word oldWord, int position){
+        EditWordDialog dialog = new EditWordDialog();
+        Bundle arguments = new Bundle();
+        arguments.putString("word_original" , String.valueOf(oldWord.getOriginal()));
+        arguments.putString("word_translation" , String.valueOf(oldWord.getTranslation()));
+        dialog.setArguments(arguments);
+        dialog.show(getChildFragmentManager(), "edit_word_dialog");
+        dialog.setOnSaveListener((original, translation) -> {
+            Word editedWord = oldWord;
+            editedWord.setOriginal(original);
+            editedWord.setTranslation(translation);
+            wordViewModel.updateWord(editedWord);
+            adapter.notifyItemChanged(position);
+        });
+    }
 }

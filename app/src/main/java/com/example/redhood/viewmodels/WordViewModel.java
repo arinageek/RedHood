@@ -25,4 +25,5 @@ public class WordViewModel extends AndroidViewModel {
     public LiveData<List<SetWithWords>> getSetWithWords(int setId){return repository.getSetWithWords(setId);}
     public void deleteWord(Word word){ repository.deleteWord(word);}
     public void insertWord(Word word){ repository.insertWord(word);}
+    public void updateWord(Word word){ repository.updateWord(word);}
 }

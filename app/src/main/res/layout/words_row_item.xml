@@ -3,15 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="100dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="@color/pink"
+    app:cardCornerRadius="20dp"
     android:layout_marginEnd="8dp"
     android:layout_marginStart="8dp"
     android:layout_marginTop="8dp">
-
-    <ImageView
-        android:id="@+id/imageBg"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:alpha="0.5"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -23,8 +19,10 @@
             android:id="@+id/text_view_original"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat"
             android:text="Original"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textStyle="bold"
             android:maxLines="1"
             android:layout_marginEnd="8dp"
             android:ellipsize="end"/>
@@ -33,6 +31,7 @@
             android:id="@+id/text_view_translation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat"
             android:layout_below="@+id/text_view_original"
             android:layout_marginEnd="8dp"
             android:ellipsize="end"

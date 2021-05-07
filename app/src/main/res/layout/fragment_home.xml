@@ -75,6 +75,13 @@
             android:backgroundTint="@color/red"
             android:text="Add"
             android:textSize="17sp" />
+        <Button
+            android:id="@+id/cameraBtn"
+            android:layout_width="250dp"
+            android:layout_height="70dp"
+            android:backgroundTint="@color/black"
+            android:text="from photo"
+            android:textSize="17sp" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

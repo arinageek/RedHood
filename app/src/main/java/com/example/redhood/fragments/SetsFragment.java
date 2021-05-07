@@ -3,6 +3,7 @@ package com.example.redhood.fragments;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,6 +24,7 @@ import com.example.redhood.R;
 import com.example.redhood.adapters.SetAdapter;
 import com.example.redhood.dialogs.AddNewSetDialog;
 import com.example.redhood.dialogs.AddNewWordDialog;
+import com.example.redhood.dialogs.EditSetDialog;
 import com.example.redhood.viewmodels.SetViewModel;
 import com.example.redhood.database.entities.Set;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -51,8 +54,8 @@ public class SetsFragment extends Fragment {
         adapter = new SetAdapter();
         recyclerView.setAdapter(adapter);
 
-        setViewModel = ViewModelProviders.of(this).get(SetViewModel.class);
-        setViewModel.getAllSets().observe(getActivity(), sets -> {
+        setViewModel = new ViewModelProvider(this).get(SetViewModel.class);
+        setViewModel.getAllSets().observe(getViewLifecycleOwner(), sets -> {
             //update RecyclerView
             adapter.submitList(sets);
         });
@@ -79,14 +82,23 @@ public class SetsFragment extends Fragment {
             }
         }).attachToRecyclerView(recyclerView);
 
-        adapter.setOnItemClickListener(set -> {
-            //navigate to a single set page
-            WordsFragment fragment = new WordsFragment();
-            Bundle arguments = new Bundle();
-            arguments.putString("set_id" , String.valueOf(set.getId()));
-            fragment.setArguments(arguments);
-            fragmentManager.beginTransaction().replace(R.id.fragment_container,
-                    fragment).commit();
+        adapter.setOnItemClickListener(new SetAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Set set) {
+                //navigate to a single set page
+                WordsFragment fragment = new WordsFragment();
+                Bundle arguments = new Bundle();
+                arguments.putString("set_id" , String.valueOf(set.getId()));
+                arguments.putString("set_title" , String.valueOf(set.getName()));
+                fragment.setArguments(arguments);
+                fragmentManager.beginTransaction().replace(R.id.fragment_container,
+                        fragment).addToBackStack(null).commit();
+            }
+
+            @Override
+            public void onItemLongClick(Set set, int position) {
+                openEditSetDialog(set, position);
+            }
         });
 
         fab.setOnClickListener(v -> openAddNewSetDialog());
@@ -99,6 +111,20 @@ public class SetsFragment extends Fragment {
         addNewSetDialog.show(getChildFragmentManager(), "set dialog");
         addNewSetDialog.setOnSaveListener(title -> {
             setViewModel.insert(new Set(title));
+        });
+    }
+
+    public void openEditSetDialog(Set set, int position){
+        EditSetDialog dialog = new EditSetDialog();
+        Bundle arguments = new Bundle();
+        arguments.putString("set_title" , String.valueOf(set.getName()));
+        dialog.setArguments(arguments);
+        dialog.show(getChildFragmentManager(), "edit_set_dialog");
+        dialog.setOnSaveListener(title -> {
+            Set editedSet = set;
+            editedSet.setName(title);
+            setViewModel.update(editedSet);
+            adapter.notifyItemChanged(position);
         });
     }
 }

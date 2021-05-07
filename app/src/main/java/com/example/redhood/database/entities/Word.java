@@ -42,4 +42,12 @@ public class Word {
     public String getTranslation() {
         return translation;
     }
+
+    public void setOriginal(String original) {
+        this.original = original;
+    }
+
+    public void setTranslation(String translation) {
+        this.translation = translation;
+    }
 }

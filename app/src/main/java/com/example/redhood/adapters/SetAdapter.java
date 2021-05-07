@@ -46,7 +46,6 @@ public class SetAdapter extends ListAdapter<Set, SetAdapter.SetHolder> {
     public void onBindViewHolder(@NonNull SetHolder holder, int position) {
         Set currentSet = getItem(position);
         holder.textViewTitle.setText(currentSet.getName());
-        holder.textViewDescription.setText("Some cards");
     }
 
     public Set getSetAt(int position) {
@@ -55,28 +54,31 @@ public class SetAdapter extends ListAdapter<Set, SetAdapter.SetHolder> {
 
     class SetHolder extends RecyclerView.ViewHolder {
         private TextView textViewTitle;
-        private TextView textViewDescription;
 
         public SetHolder(@NonNull View itemView) {
             super(itemView);
             textViewTitle = itemView.findViewById(R.id.text_view_title);
-            textViewDescription = itemView.findViewById(R.id.text_view_description);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    int position = getAdapterPosition();
-                    if (listener != null && position != RecyclerView.NO_POSITION) {
-                        listener.onItemClick(getItem(position));
-                    }
+            itemView.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (listener != null && position != RecyclerView.NO_POSITION) {
+                    listener.onItemClick(getItem(position));
                 }
+            });
+
+            itemView.setOnLongClickListener(v -> {
+                int position = getAdapterPosition();
+                if (listener != null && position != RecyclerView.NO_POSITION) {
+                    listener.onItemLongClick(getItem(position), position);
+                }
+                return false;
             });
         }
     }
 
     public interface OnItemClickListener {
         void onItemClick(Set set);
+        void onItemLongClick(Set set, int position);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
