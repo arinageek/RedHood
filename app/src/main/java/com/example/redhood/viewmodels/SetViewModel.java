@@ -6,21 +6,19 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.example.redhood.database.SetRepository;
+import com.example.redhood.database.DataRepository;
 import com.example.redhood.database.entities.Set;
-import com.example.redhood.database.entities.Word;
-import com.example.redhood.database.relations.SetWithWords;
 
 import java.util.List;
 
 public class SetViewModel extends AndroidViewModel {
 
-    private SetRepository repository;
+    private DataRepository repository;
     private LiveData<List<Set>> allSets;
 
     public SetViewModel(@NonNull Application application) {
         super(application);
-        repository = new SetRepository(application);
+        repository = new DataRepository(application);
         allSets = repository.getAllSets();
     }
 

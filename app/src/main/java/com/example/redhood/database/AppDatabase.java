@@ -9,23 +9,23 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+import com.example.redhood.database.dao.SetDao;
+import com.example.redhood.database.dao.WordDao;
 import com.example.redhood.database.entities.Set;
 import com.example.redhood.database.entities.Word;
 
-import java.util.ArrayList;
-import java.util.List;
+@Database(entities = {Set.class, Word.class}, version = 2)
+public abstract class AppDatabase extends RoomDatabase {
 
-@Database(entities = {Set.class, Word.class}, version = 1)
-public abstract class SetDatabase extends RoomDatabase {
-
-    public static SetDatabase instance;
+    public static AppDatabase instance;
 
     public abstract SetDao setDao();
+    public abstract WordDao wordDao();
 
-    public static synchronized SetDatabase getInstance(Context context){
+    public static synchronized AppDatabase getInstance(Context context){
         if(instance == null){
             instance = Room.databaseBuilder(context.getApplicationContext(),
-                    SetDatabase.class,"set_database")
+                    AppDatabase.class,"set_database")
                     .fallbackToDestructiveMigration()
                     .addCallback(roomCallback)
                     .build();
@@ -45,7 +45,7 @@ public abstract class SetDatabase extends RoomDatabase {
 
         private SetDao setDao;
 
-        private PopulateDbAsyncTask(SetDatabase db){
+        private PopulateDbAsyncTask(AppDatabase db){
             setDao = db.setDao();
         }
 

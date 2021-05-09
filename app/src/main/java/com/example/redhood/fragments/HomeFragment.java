@@ -1,6 +1,5 @@
 package com.example.redhood.fragments;
 
-import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,20 +10,14 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
-import com.example.redhood.MainActivity;
-import com.example.redhood.database.SetRepository;
 import com.example.redhood.database.entities.Set;
 import com.example.redhood.dialogs.ChooseSetDialog;
 import com.example.redhood.viewmodels.HomeViewModel;
 import com.example.redhood.R;
 import com.example.redhood.database.entities.Word;
-import com.example.redhood.viewmodels.SetViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,11 +51,9 @@ public class HomeFragment extends Fragment {
         addBtn.setOnClickListener(v -> {
             original = etOrigWord.getText().toString();
             translation = etTransWord.getText().toString();
-            if(original.trim().isEmpty() || translation.trim().isEmpty()){
+            if(original.trim().isEmpty() || translation.trim().isEmpty())
                 Toast.makeText(getActivity(), "Make sure that the fields aren't empty!", Toast.LENGTH_SHORT).show();
-            }else{
-                preloadData();
-            }
+            else preloadData();
         });
 
         cameraBtn.setOnClickListener(v -> {
@@ -73,11 +64,6 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
-    /*
-    Load sets from Room Db
-    Save set objects into "items" array
-    Save just titles (for the dialog) into "setsTitles" array
-    */
     public void preloadData(){
         homeViewModel.getAllSets().observe(getViewLifecycleOwner(), sets -> {
             setsObjects = sets;
@@ -85,11 +71,8 @@ public class HomeFragment extends Fragment {
             for(int i=0; i<sets.size(); i++){
                 setsTitles[i] = sets.get(i).getName();
             }
-            if(setsTitles.length>0){
-                openDialog();
-            }else{
-                Toast.makeText(getActivity(), "First create a set!", Toast.LENGTH_SHORT).show();
-            }
+            if(setsTitles.length>0) openDialog();
+            else Toast.makeText(getActivity(), "First create a set!", Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -97,6 +80,7 @@ public class HomeFragment extends Fragment {
         //onChanged can be called from multiple states causing openDialog to fire up
         //So we need to check whether the current fragment is added
         if (!isAdded()) return;
+        homeViewModel.getAllSets().removeObservers(getViewLifecycleOwner());
         ChooseSetDialog dialog = new ChooseSetDialog(setsTitles);
         dialog.show(getChildFragmentManager(), "choose_set_dialog");
         dialog.setOnSelectedListener(choice -> {
@@ -106,4 +90,5 @@ public class HomeFragment extends Fragment {
             etOrigWord.setText(""); etTransWord.setText("");
         });
     }
+
 }

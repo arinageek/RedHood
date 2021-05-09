@@ -1,4 +1,4 @@
-package com.example.redhood.database;
+package com.example.redhood.database.dao;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -25,19 +25,6 @@ public interface SetDao {
 
     @Delete
     void delete(Set set);
-
-    @Insert
-    void insertWord(Word word);
-
-    @Update
-    void updateWord(Word word);
-
-    @Delete
-    void deleteWord(Word word);
-
-    @Transaction
-    @Query("SELECT * FROM set_table WHERE id = :setId")
-    LiveData<List<SetWithWords>> getSetWithWords(int setId);
 
     @Transaction
     @Query("DELETE FROM word_table WHERE setId = :setId")

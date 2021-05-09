@@ -27,12 +27,19 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
+import com.example.redhood.database.RepositoryCallback;
+import com.example.redhood.database.entities.Set;
+import com.example.redhood.database.entities.Word;
+import com.example.redhood.dialogs.ChooseSetDialog;
 import com.example.redhood.translation.MyClickableSpan;
 import com.example.redhood.R;
 import com.example.redhood.translation.Translate;
+import com.example.redhood.viewmodels.HomeViewModel;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
@@ -48,6 +55,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -60,14 +68,19 @@ public class RecognitionFragment extends Fragment implements View.OnClickListene
     private ArrayList<String> words= new ArrayList<>();
     private RelativeLayout layout;
     static final int REQUEST_IMAGE_CAPTURE = 1;
-    Bitmap imageBitmap;
+    private Bitmap imageBitmap;
     private String currentPhotoPath;
+    private Snackbar mySnackbar;
+    private static HomeViewModel homeViewModel;
+    private static CharSequence[] setsTitles = {};
+    private static List<Set> setsObjects = new ArrayList<>();
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.text_recognition_fragment, container, false);
 
+        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         myTextView = view.findViewById(R.id.textView);
         imageView = view.findViewById(R.id.imageView);
         view.findViewById(R.id.checkText).setOnClickListener(this);
@@ -178,51 +191,58 @@ public class RecognitionFragment extends Fragment implements View.OnClickListene
                 "Exception", Toast.LENGTH_LONG).show());
     }
 
+    //Loading set names from DB before opening AddNewWordDialog
+    public void preloadData(String orig, String trans){
+        homeViewModel.getAllSets().observe(getViewLifecycleOwner(), sets -> {
+            setsObjects = sets;
+            setsTitles = new CharSequence[sets.size()];
+            for(int i=0; i<sets.size(); i++){
+                setsTitles[i] = sets.get(i).getName();
+            }
+            if(setsTitles.length>0) openDialog(orig, trans);
+            else Toast.makeText(getActivity(), "First create a set!", Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    //Opening AddNewWordDialog
+    public void openDialog(String original, String translation){
+        //onChanged can be called from multiple states causing openDialog to fire up
+        //So we need to check whether the current fragment is added
+        if (!isAdded()) return;
+        homeViewModel.getAllSets().removeObservers(getViewLifecycleOwner());
+        ChooseSetDialog dialog = new ChooseSetDialog(setsTitles);
+        dialog.show(getChildFragmentManager(), "choose_set_dialog");
+        dialog.setOnSelectedListener(choice -> {
+            Word word = new Word(setsObjects.get(choice).getId(), original, translation);
+            homeViewModel.insertWord(word);
+        });
+    }
+
     private void addClickableText(SpannableStringBuilder ssb, int startPos, String clickableText) {
         ssb.append(clickableText);
-
         MyClickableSpan clickableSpan = new MyClickableSpan(clickableText, startPos, ssb.length());
+
         clickableSpan.setOnSpanClickListener((start, end, selected, original) -> {
             if(!selected){
-
-                ExecutorService executor = Executors.newSingleThreadExecutor();
-                Handler handler = new Handler(Looper.getMainLooper());
-                executor.execute(() -> {
-                    //Background work here
-                    String translation="";
-                    try {
-                        Translate translateRequest = new Translate();
-                        String response = translateRequest.Post(original);
-                        JSONArray jsonResponse = new JSONArray(response);
-                        translation = jsonResponse.getJSONObject(0).getJSONArray("translations").getJSONObject(0).getString("text");
-                        Log.d("Look here!", translation);
-
-                    } catch (Exception e) {
-                        Log.d("Error!", e.toString());
-                    }
-
-                    String finalTranslation = translation;
-                    handler.post(() -> {
-                        //UI Thread work here
-                        Snackbar mySnackbar = Snackbar.make(layout, original+" - "+finalTranslation, BaseTransientBottomBar.LENGTH_INDEFINITE);
-                        mySnackbar.show();
+                homeViewModel.getTranslation(original, result -> {
+                    mySnackbar = Snackbar.make(layout, original+" - "+result, BaseTransientBottomBar.LENGTH_LONG);
+                    mySnackbar.setAction("ADD", v ->{
+                        preloadData(original, result);
+                        mySnackbar.dismiss();
                     });
+                    mySnackbar.show();
                 });
-                ssb.setSpan(new BackgroundColorSpan(Color.RED),
-                        start,
-                        end,
+                ssb.setSpan(new BackgroundColorSpan(ContextCompat.getColor(getActivity(), R.color.pink)), start, end,
                         Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
             }else{
-                ssb.setSpan(new BackgroundColorSpan(Color.TRANSPARENT),
-                        start,
-                        end,
+                ssb.setSpan(new BackgroundColorSpan(Color.TRANSPARENT), start, end,
                         Spannable.SPAN_INCLUSIVE_INCLUSIVE);
             }
         clickableSpan.setSelected(!selected);
         myTextView.setText(ssb);
-
         });
+
         ssb.setSpan(clickableSpan, startPos, ssb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
