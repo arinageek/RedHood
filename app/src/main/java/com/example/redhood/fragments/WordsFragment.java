@@ -7,6 +7,7 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,6 +41,7 @@ public class WordsFragment extends Fragment{
     private static WordViewModel wordViewModel;
     private static WordAdapter adapter;
     private FloatingActionButton fab;
+    private Button playBtn;
     private static int setId;
     private TextView set_title;
 
@@ -51,6 +53,7 @@ public class WordsFragment extends Fragment{
         fragmentManager = ((MainActivity)getActivity()).getSupportFragmentManager();
 
         fab = rootView.findViewById(R.id.fab);
+        playBtn = rootView.findViewById(R.id.playBtn);
         set_title = rootView.findViewById(R.id.set_title);
         recyclerView = rootView.findViewById(R.id.recyclerViewWords);
         //recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -103,6 +106,15 @@ public class WordsFragment extends Fragment{
 
         fab.setOnClickListener(v -> {
             openAddNewWordDialog();
+        });
+
+        playBtn.setOnClickListener(v -> {
+            GameFragment fragment = new GameFragment();
+            Bundle arguments = new Bundle();
+            arguments.putString("set_id" , String.valueOf(setId));
+            fragment.setArguments(arguments);
+            fragmentManager.beginTransaction().replace(R.id.fragment_container,
+                    fragment, "game").addToBackStack(null).commit();
         });
 
         return rootView;

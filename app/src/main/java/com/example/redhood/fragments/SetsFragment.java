@@ -92,7 +92,7 @@ public class SetsFragment extends Fragment {
                 arguments.putString("set_title" , String.valueOf(set.getName()));
                 fragment.setArguments(arguments);
                 fragmentManager.beginTransaction().replace(R.id.fragment_container,
-                        fragment).addToBackStack(null).commit();
+                        fragment, "words").addToBackStack(null).commit();
             }
 
             @Override
