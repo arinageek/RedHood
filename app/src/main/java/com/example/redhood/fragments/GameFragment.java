@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.redhood.MainActivity;
 import com.example.redhood.R;
 import com.example.redhood.database.entities.Word;
 import com.example.redhood.database.relations.SetWithWords;
@@ -53,16 +54,20 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         originalWord = view.findViewById(R.id.text_view_original);
         score = view.findViewById(R.id.score);
 
-        btn1 = view.findViewById(R.id.button1); btn1.setOnClickListener(this);
-        btn2 = view.findViewById(R.id.button2); btn2.setOnClickListener(this);
-        btn3 = view.findViewById(R.id.button3); btn3.setOnClickListener(this);
-        btn4 = view.findViewById(R.id.button4); btn4.setOnClickListener(this);
+        btn1 = view.findViewById(R.id.button1);
+        btn1.setOnClickListener(this);
+        btn2 = view.findViewById(R.id.button2);
+        btn2.setOnClickListener(this);
+        btn3 = view.findViewById(R.id.button3);
+        btn3.setOnClickListener(this);
+        btn4 = view.findViewById(R.id.button4);
+        btn4.setOnClickListener(this);
 
         gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
         gameViewModel.getSetWithWords(setId).observe(getViewLifecycleOwner(), setWithWords -> {
             List<Word> words = setWithWords.get(0).words;
-            if(!words.isEmpty()){
-                for(Word word : words){
+            if (!words.isEmpty()) {
+                for (Word word : words) {
                     originals.add(word.getOriginal());
                     translations.add(word.getTranslation());
                 }
@@ -74,29 +79,28 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         return view;
     }
 
-    private void checkNextAction(){
+    private void checkNextAction() {
         Handler handler = new Handler(Looper.getMainLooper());
         handler.postDelayed(() -> {
-            if (curRound < rounds){
+            if (curRound < rounds) {
                 nextWord();
-            }else{
+            } else {
                 GameResultsFragment fragment = new GameResultsFragment();
                 Bundle arguments = new Bundle();
                 arguments.putInt("game_correct", correctAnswers);
                 arguments.putInt("game_all", rounds);
                 fragment.setArguments(arguments);
-                getParentFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        fragment, "game_results").addToBackStack(null).commit();
+                ((MainActivity) getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        fragment, "game_results").commit();
             }
         }, 1000);
     }
 
     @Override
     public void onClick(View v) {
-        Handler handler = new Handler(Looper.getMainLooper());
         switch (v.getId()) {
             case R.id.button1:
-                if (locationOfCorrectAnswer == 0){
+                if (locationOfCorrectAnswer == 0) {
                     correctAnswers++;
                     btn1.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.green));
                 } else {
@@ -105,7 +109,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                 checkNextAction();
                 break;
             case R.id.button2:
-                if (locationOfCorrectAnswer == 1){
+                if (locationOfCorrectAnswer == 1) {
                     correctAnswers++;
                     btn2.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.green));
                 } else {
@@ -114,7 +118,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                 checkNextAction();
                 break;
             case R.id.button3:
-                if (locationOfCorrectAnswer == 2){
+                if (locationOfCorrectAnswer == 2) {
                     correctAnswers++;
                     btn3.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.green));
                 } else {
@@ -123,7 +127,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                 checkNextAction();
                 break;
             case R.id.button4:
-                if (locationOfCorrectAnswer == 3){
+                if (locationOfCorrectAnswer == 3) {
                     correctAnswers++;
                     btn4.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.green));
                 } else {
@@ -134,14 +138,14 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private boolean isAlreadyContained(ArrayList<Integer> answers, int answer){
-        for(int i : answers){
-            if(i == answer) return true;
+    private boolean isAlreadyContained(ArrayList<Integer> answers, int answer) {
+        for (int i : answers) {
+            if (i == answer) return true;
         }
         return false;
     }
 
-    private void nextWord(){
+    private void nextWord() {
 
         btn1.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.black));
         btn2.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.black));
@@ -150,11 +154,11 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 
         //Setting the right score
         curRound++;
-        score.setText(curRound+"/"+rounds);
+        score.setText(curRound + "/" + rounds);
 
         //Choosing a word from originals array
         chosenWord = rand.nextInt(originals.size());
-        while(isAlreadyContained(questionsArray, chosenWord)){
+        while (isAlreadyContained(questionsArray, chosenWord)) {
             chosenWord = rand.nextInt(originals.size());
         }
         questionsArray.add(chosenWord);
@@ -164,12 +168,12 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 
         ArrayList<Integer> incorrectArray = new ArrayList<>();
         int incorrectAnswer;
-        for(int i=0; i<4; i++){
-            if(i == locationOfCorrectAnswer){
+        for (int i = 0; i < 4; i++) {
+            if (i == locationOfCorrectAnswer) {
                 answers[i] = translations.get(chosenWord);
-            }else{
+            } else {
                 incorrectAnswer = rand.nextInt(originals.size());
-                while((incorrectAnswer == chosenWord) || isAlreadyContained(incorrectArray, incorrectAnswer)){
+                while ((incorrectAnswer == chosenWord) || isAlreadyContained(incorrectArray, incorrectAnswer)) {
                     incorrectAnswer = rand.nextInt(originals.size());
                 }
                 incorrectArray.add(incorrectAnswer);

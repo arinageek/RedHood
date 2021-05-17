@@ -56,7 +56,6 @@ public class SetsFragment extends Fragment {
 
         setViewModel = new ViewModelProvider(this).get(SetViewModel.class);
         setViewModel.getAllSets().observe(getViewLifecycleOwner(), sets -> {
-            //update RecyclerView
             adapter.submitList(sets);
         });
 
@@ -88,7 +87,7 @@ public class SetsFragment extends Fragment {
                 //navigate to a single set page
                 WordsFragment fragment = new WordsFragment();
                 Bundle arguments = new Bundle();
-                arguments.putString("set_id" , String.valueOf(set.getId()));
+                arguments.putInt("set_id" , set.getId());
                 arguments.putString("set_title" , String.valueOf(set.getName()));
                 fragment.setArguments(arguments);
                 fragmentManager.beginTransaction().replace(R.id.fragment_container,

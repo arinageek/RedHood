@@ -5,6 +5,8 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.redhood.database.DataRepository;
 import com.example.redhood.database.entities.Word;
@@ -25,4 +27,6 @@ public class WordViewModel extends AndroidViewModel {
     public void deleteWord(Word word){ repository.deleteWord(word);}
     public void insertWord(Word word){ repository.insertWord(word);}
     public void updateWord(Word word){ repository.updateWord(word);}
+
 }
+

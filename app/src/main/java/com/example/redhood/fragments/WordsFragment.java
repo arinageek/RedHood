@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -33,8 +34,10 @@ import com.example.redhood.viewmodels.SetViewModel;
 import com.example.redhood.viewmodels.WordViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.List;
 
-public class WordsFragment extends Fragment{
+
+public class WordsFragment extends Fragment {
 
     private FragmentManager fragmentManager;
     private static RecyclerView recyclerView;
@@ -44,29 +47,30 @@ public class WordsFragment extends Fragment{
     private Button playBtn;
     private static int setId;
     private TextView set_title;
+    private int set_size=0;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_words, container, false);
 
-        fragmentManager = ((MainActivity)getActivity()).getSupportFragmentManager();
+        fragmentManager = ((MainActivity) getActivity()).getSupportFragmentManager();
 
         fab = rootView.findViewById(R.id.fab);
         playBtn = rootView.findViewById(R.id.playBtn);
         set_title = rootView.findViewById(R.id.set_title);
         recyclerView = rootView.findViewById(R.id.recyclerViewWords);
-        //recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new WordAdapter();
         recyclerView.setAdapter(adapter);
 
-        setId = Integer.parseInt(getArguments().getString("set_id", "0"));
+        setId = getArguments().getInt("set_id", 0);
         set_title.setText(getArguments().getString("set_title", "Set"));
 
         wordViewModel = new ViewModelProvider(this).get(WordViewModel.class);
         wordViewModel.getSetWithWords(setId).observe(getViewLifecycleOwner(), setWithWords -> {
-            if(setWithWords.isEmpty()) return;
+            if (setWithWords.isEmpty()) return;
             //update RecyclerView
+            set_size = setWithWords.get(0).words.size();
             adapter.submitList(setWithWords.get(0).words);
         });
 
@@ -92,7 +96,7 @@ public class WordsFragment extends Fragment{
             public void onItemClick(Word word) {
                 SingleWordFragment fragment = new SingleWordFragment();
                 Bundle arguments = new Bundle();
-                arguments.putString("word" , String.valueOf(word.getOriginal()));
+                arguments.putString("word", String.valueOf(word.getOriginal()));
                 fragment.setArguments(arguments);
                 fragmentManager.beginTransaction().replace(R.id.fragment_container,
                         fragment).addToBackStack(null).commit();
@@ -109,18 +113,23 @@ public class WordsFragment extends Fragment{
         });
 
         playBtn.setOnClickListener(v -> {
-            GameFragment fragment = new GameFragment();
-            Bundle arguments = new Bundle();
-            arguments.putString("set_id" , String.valueOf(setId));
-            fragment.setArguments(arguments);
-            fragmentManager.beginTransaction().replace(R.id.fragment_container,
-                    fragment, "game").addToBackStack(null).commit();
+            if (set_size >= 4) {
+                GameFragment fragment = new GameFragment();
+                Bundle arguments = new Bundle();
+                arguments.putString("set_id", String.valueOf(setId));
+                fragment.setArguments(arguments);
+                fragmentManager.beginTransaction().replace(R.id.fragment_container,
+                        fragment, "game").addToBackStack(null).commit();
+            } else {
+                Toast.makeText(getActivity(), "There must be at least 4 words in a set to play!",
+                        Toast.LENGTH_SHORT).show();
+            }
         });
 
         return rootView;
     }
 
-    public void openAddNewWordDialog(){
+    public void openAddNewWordDialog() {
         AddNewWordDialog addNewWordDialog = new AddNewWordDialog();
         addNewWordDialog.show(getChildFragmentManager(), "word dialog");
         addNewWordDialog.setOnSaveListener((word, translation) -> {
@@ -128,11 +137,11 @@ public class WordsFragment extends Fragment{
         });
     }
 
-    public void openEditWordDialog(Word oldWord, int position){
+    public void openEditWordDialog(Word oldWord, int position) {
         EditWordDialog dialog = new EditWordDialog();
         Bundle arguments = new Bundle();
-        arguments.putString("word_original" , String.valueOf(oldWord.getOriginal()));
-        arguments.putString("word_translation" , String.valueOf(oldWord.getTranslation()));
+        arguments.putString("word_original", String.valueOf(oldWord.getOriginal()));
+        arguments.putString("word_translation", String.valueOf(oldWord.getTranslation()));
         dialog.setArguments(arguments);
         dialog.show(getChildFragmentManager(), "edit_word_dialog");
         dialog.setOnSaveListener((original, translation) -> {
