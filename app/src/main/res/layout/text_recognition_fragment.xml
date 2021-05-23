@@ -50,13 +50,13 @@
             android:id="@+id/select_image"
             android:layout_width="wrap_content"
             android:layout_height="70dp"
-            android:text="Take a photo"
+            android:text="@string/take_a_photo_btn"
             android:layout_marginRight="20dp"/>
         <Button
             android:id="@+id/checkText"
             android:layout_width="wrap_content"
             android:layout_height="70dp"
-            android:text="Get the text" />
+            android:text="@string/get_the_text_btn" />
 
     </LinearLayout>
 

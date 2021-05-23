@@ -6,7 +6,7 @@
 
     <EditText
         android:id="@+id/edit_title"
-        android:hint="Title"
+        android:hint="@string/title_hint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 </RelativeLayout>

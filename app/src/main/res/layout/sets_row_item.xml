@@ -22,7 +22,7 @@
             android:textColor="#FFFFFF"
             android:fontFamily="@font/montserrat"
             android:maxLines="1"
-            android:text="Your first set"
+            android:text="@string/your_first_set"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
     </RelativeLayout>

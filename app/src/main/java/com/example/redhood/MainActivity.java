@@ -1,17 +1,12 @@
 package com.example.redhood;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
 
 import com.example.redhood.fragments.HomeFragment;
-import com.example.redhood.fragments.RecognitionFragment;
 import com.example.redhood.fragments.SetsFragment;
-import com.example.redhood.fragments.SettingsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,10 +35,6 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.nav_sets:
                         selectedFragment = new SetsFragment();
                         tag = "sets";
-                        break;
-                    case R.id.nav_settings:
-                        selectedFragment = new SettingsFragment();
-                        tag = "settings";
                         break;
                 }
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,

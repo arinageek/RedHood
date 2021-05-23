@@ -4,4 +4,14 @@
     <string name="action_gallery">Gallery</string>
     <string name="permission_request">This app need to access files on your device.</string>
     <string name="no_text">No text found</string>
+    <string  name="home_title">Add a new word to a set!</string>
+    <string name="word_hint">Word</string>
+    <string name="translation_hint">Translation</string>
+    <string name="add_btn">Add</string>
+    <string name="from_photo_btn">from photo</string>
+    <string name="play_btn">Play</string>
+    <string name="title_hint">Title</string>
+    <string name="your_first_set">Your first set</string>
+    <string name="take_a_photo_btn">Take a photo</string>
+    <string name="get_the_text_btn">Get the text</string>
 </resources>

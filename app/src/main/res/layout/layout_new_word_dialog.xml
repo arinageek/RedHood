@@ -6,13 +6,13 @@
 
     <EditText
         android:id="@+id/et_origWord"
-        android:hint="Word"
+        android:hint="@string/word_hint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <EditText
         android:id="@+id/et_transWord"
-        android:hint="Translation"
+        android:hint="@string/translation_hint"
         android:layout_marginTop="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
