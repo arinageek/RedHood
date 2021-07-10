@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardBackgroundColor="@color/pink"
     app:cardCornerRadius="20dp"
@@ -11,19 +11,19 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="center"
-        android:padding="16dp">
+        android:padding="8dp">
 
         <TextView
             android:id="@+id/text_view_original"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat"
+            android:textSize="20dp"
             android:text=""
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textStyle="bold"
-            android:maxLines="1"
             android:ellipsize="end"/>
 
         <TextView
@@ -31,9 +31,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat"
+            android:textSize="16dp"
             android:layout_below="@+id/text_view_original"
             android:ellipsize="end"
-            android:maxLines="1"
             android:text=""
             android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 

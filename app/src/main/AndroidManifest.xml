@@ -35,6 +35,9 @@
         <meta-data
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"
             android:value="ocr" />
+        <meta-data
+            android:name = "translationKeyValue"
+            android:value = "${TRANSLATION_API_KEY}"/>
     </application>
 
 </manifest>

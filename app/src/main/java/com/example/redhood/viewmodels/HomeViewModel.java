@@ -2,6 +2,7 @@ package com.example.redhood.viewmodels;
 
 
 import android.app.Application;
+import android.content.Context;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -33,6 +34,6 @@ public class HomeViewModel extends AndroidViewModel {
         return allSets;
     }
 
-    public void getTranslation(String original, RepositoryCallback<String> callback){ repository.getTranslation(original,callback );}
+    public void getTranslation(String original, RepositoryCallback<String> callback, Context context){ repository.getTranslation(original,callback, context );}
 
 }

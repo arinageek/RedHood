@@ -2,6 +2,7 @@ package com.example.redhood.database;
 
 
 import android.app.Application;
+import android.content.Context;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -72,12 +73,12 @@ public class DataRepository {
     public LiveData<List<SetWithWords>> getSetWithWords(int setId){ return wordDao.getSetWithWords(setId);}
 
     //Network functions
-    public void getTranslation(final String original, final RepositoryCallback<String> callback) {
+    public void getTranslation(final String original, final RepositoryCallback<String> callback, Context context) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             String translation="";
             try {
-                Translate translateRequest = new Translate();
+                Translate translateRequest = new Translate(context);
                 String response = translateRequest.Post(original);
                 JSONArray jsonResponse = new JSONArray(response);
                 translation = jsonResponse.getJSONObject(0).getJSONArray("translations").getJSONObject(0).getString("text");

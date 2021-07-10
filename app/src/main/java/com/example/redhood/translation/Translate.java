@@ -1,5 +1,11 @@
 package com.example.redhood.translation;
 
+import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
+
+import com.example.redhood.BuildConfig;
 import com.google.gson.*;
 
 import java.io.IOException;
@@ -13,7 +19,22 @@ import okhttp3.Response;
 
 
 public class Translate {
-    private static String subscriptionKey = "d9b11ff209854477b7cf78f0b1c2022e";
+    private Context context;
+    private static String subscriptionKey;
+
+    public Translate(Context context) {
+        this.context = context;
+        ApplicationInfo app;
+
+        try {
+            app = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+            Bundle bundle = app.metaData;
+            subscriptionKey = bundle.getString("translationKeyValue");
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     // Add your location, also known as region. The default is global.
     // This is required if using a Cognitive Services resource.
@@ -35,7 +56,7 @@ public class Translate {
     public String Post(String original) throws IOException {
         MediaType mediaType = MediaType.parse("application/json");
         RequestBody body = RequestBody.create(mediaType,
-                "[{\"Text\": \""+original+"\"}]");
+                "[{\"Text\": \"" + original + "\"}]");
         Request request = new Request.Builder().url(url).post(body)
                 .addHeader("Ocp-Apim-Subscription-Key", subscriptionKey)
                 .addHeader("Ocp-Apim-Subscription-Region", location)

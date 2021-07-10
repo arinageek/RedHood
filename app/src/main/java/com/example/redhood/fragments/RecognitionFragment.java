@@ -1,5 +1,6 @@
 package com.example.redhood.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -224,6 +225,7 @@ public class RecognitionFragment extends Fragment implements View.OnClickListene
 
         clickableSpan.setOnSpanClickListener((start, end, selected, original) -> {
             if(!selected){
+                Context context = getContext();
                 homeViewModel.getTranslation(original, result -> {
                     mySnackbar = Snackbar.make(layout, original+" - "+result, BaseTransientBottomBar.LENGTH_LONG);
                     mySnackbar.setAction("ADD", v ->{
@@ -231,7 +233,7 @@ public class RecognitionFragment extends Fragment implements View.OnClickListene
                         mySnackbar.dismiss();
                     });
                     mySnackbar.show();
-                });
+                }, getContext());
                 ssb.setSpan(new BackgroundColorSpan(ContextCompat.getColor(getActivity(), R.color.pink)), start, end,
                         Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
